@@ -1,0 +1,93 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+int main() {
+srand(time(0));
+
+// our word bank
+const char* words[] = {
+"programming", "computer", "keyboard", "variable", "function",
+"array", "pointer", "compiler", "algorithm", "structure"
+};
+int totalwords = 10;
+
+// pick a random word and find its length manually
+const char* word = words[rand() % totalwords];
+int wordlen = 0;
+while (word[wordlen] != '\0') wordlen++;
+
+bool guessed[26] = {false};
+int lives = 6;
+
+cout << "================================" << endl;
+cout << "       WELCOME TO HANGMAN!" << endl;
+cout << "================================" << endl;
+cout << "You have " << lives << " lives. Good luck!" << endl;
+
+while (lives > 0) {
+
+cout << "\nLives remaining: " << lives << endl;
+
+// show the word, hiding unguessed letters as underscores
+cout << "Word: ";
+bool allguessed = true;
+for (int i = 0; i < wordlen; i++) {
+int idx = word[i] - 'a';
+if (guessed[idx]) {
+cout << word[i] << " ";
+} else {
+cout << "_ ";
+allguessed = false;
+}
+}
+cout << endl;
+
+// player got every letter, they win
+if (allguessed) {
+cout << "\n*** Congratulations! You guessed the word: " << word << " ***" << endl;
+return 0;
+}
+
+char letter;
+cout << "Guess a letter: ";
+cin >> letter;
+
+// only accept lowercase letters
+if (letter < 'a' || letter > 'z') {
+cout << "Please enter a lowercase letter only!" << endl;
+continue;
+}
+
+int idx = letter - 'a';
+
+// no point guessing the same letter twice
+if (guessed[idx]) {
+cout << "You already guessed '" << letter << "'. Try a different one!" << endl;
+continue;
+}
+
+guessed[idx] = true;
+
+// check if the letter actually appears in the word
+bool found = false;
+for (int i = 0; i < wordlen; i++) {
+if (word[i] == letter) {
+found = true;
+}
+}
+
+if (found) {
+cout << "Great guess! '" << letter << "' is in the word!" << endl;
+} else {
+lives--;
+cout << "Oops! '" << letter << "' is not in the word. You lost a life!" << endl;
+}
+}
+
+// no lives left, game over
+cout << "\n*** Game Over! The word was: " << word << " ***" << endl;
+
+return 0;
+}
